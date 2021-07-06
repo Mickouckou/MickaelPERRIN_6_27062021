@@ -1,5 +1,5 @@
 const express = require('express');
-//Abadon de bodyparser au profit de express.json
+//Abandon de bodyparser au profit de express.json
 //const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -8,10 +8,14 @@ const helmet = require('helmet');
 //Importation du package express-session qui sécurise les cookies
 const session = require('express-session');
 
+require('dotenv').config();
+
+const mongo = process.env.MONGO;
+
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
-mongoose.connect('mongodb+srv://UserMickou:WeZMXmVTeLik6mc@cluster0.vhwzs.mongodb.net/projet6?retryWrites=true&w=majority',
+mongoose.connect(mongo,
     { useNewUrlParser: true,
         useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
