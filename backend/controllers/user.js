@@ -1,17 +1,20 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+//On importe CryptoJS qui va masquer l'email utilisateur
 const CryptoJS = require("crypto-js");
 
 require('dotenv').config();
 
 const clePassword = process.env.CLE_PASSWORD_BDD;
+//Ces 2 constantes permettent de toujours masquer de la même manière un email
 const cleEmail = CryptoJS.enc.Hex.parse(process.env.CLE_EMAIL_BDD);
 const iv = CryptoJS.enc.Hex.parse(process.env.IV);
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
+            // On crée une constante avec l'email masqué
             const emailMasque = CryptoJS.AES.encrypt(req.body.email, cleEmail, {iv: iv}).toString();
             const user = new User({
                 email: emailMasque,

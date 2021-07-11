@@ -61,13 +61,17 @@ exports.likeDislikeSauce =(req, res, next) =>{
     if (req.body.like === 1) {
         Sauce.findOne({_id: req.params.id})
             .then((sauce) =>{
+                //Condition qui vérifie si l'userId est déjà dans le tableau des likes ou pas
                 if(!sauce.usersLiked.includes(req.body.userId)){
+                    //s'il n'y est pas, on met à jour le likes
                     Sauce.updateOne({ _id: req.params.id }, { $push: { usersLiked: req.body.userId }, $inc: { likes: 1 }})
                         .then(() =>
                             res.status(200).json({ message: "J'aime ajouté !"}))
                         .catch(error =>
                             res.status(400).json({ error }));
                     }
+                //s'il est déjà dans le tableau, on ne met pas à jour le likes
+                else res.status(400).json({ message: "Vous avez déjà aimé cette sauce !"});
                 })
             .catch(error =>
                 res.status(400).json({ error }));
@@ -75,13 +79,17 @@ exports.likeDislikeSauce =(req, res, next) =>{
     else if (req.body.like === -1) {
         Sauce.findOne({_id: req.params.id})
             .then((sauce) =>{
+                //Condition qui vérifie si l'userId est déjà dans le tableau des Dislikes ou pas
                 if(!sauce.usersDisliked.includes(req.body.userId)){
+                    //s'il n'y est pas, on met à jour le dislikes
                     Sauce.updateOne({ _id: req.params.id }, { $push: { usersDisliked: req.body.userId }, $inc: {dislikes: 1 }})
                         .then(() =>
                             res.status(200).json({ message: "Je n'aime pas ajouté ! "}))
                         .catch(error =>
                             res.status(400).json({ error }));
                     }
+                //s'il est déjà dans le tableau, on ne met pas à jour le dislikes
+                else res.status(400).json({ message: "Vous avez déjà dit ne pas aimer cette sauce !"});
                 })
             .catch(error =>
                 res.status(400).json({ error }));
@@ -104,6 +112,8 @@ exports.likeDislikeSauce =(req, res, next) =>{
                         .catch(error =>
                             res.status(400).json({ error }));
                     }
+                //s'il n'est pas déjà dans le tableau, on ne met pas à jour le likes/dislikes
+                else res.status(400).json({ message: "Vous avez déjà changé d'avis sur cette sauce !"});
                 })
             .catch(error =>
                 res.status(404).json({ error }));
